@@ -13,7 +13,11 @@ Labs disponibles
 
 Lab	Section	Outils
 
-Déploiement AD DS, DNS, GPO	Système	Windows Server 2022, VMware
-| [Serveur DHCP Ubuntu](reseau/dhcp-ubuntu-server/) | Réseau | Ubuntu Server, VirtualBox |
-| [DNS statique BIND9](reseau/dns-statique-bind9/) | Réseau | Ubuntu, BIND9 |
+| Lab | Section | Outils |
+|-----|---------|--------|
+| [Déploiement AD DS, DNS, GPO](systeme/ad-ds/) | Système | Windows Server 2022, VMware |
+| [Kerberos et SMB2](systeme/ad-kerberos-smb2/) | Système | Active Directory, Wireshark, klist |
+| [Serveur DHCP Ubuntu](reseau/dhcp-ubuntu-server/) | Réseau | Ubuntu Server, isc-dhcp-server, VirtualBox |
+| [DNS statique BIND9](reseau/dns-statique-bind9/) | Réseau | Ubuntu, BIND9, nslookup |
+
 D'autres labs seront ajoutés au fil de ma progression.
