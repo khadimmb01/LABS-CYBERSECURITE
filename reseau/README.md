@@ -4,6 +4,7 @@ Labs réseau : pare-feu, NAT, DMZ, analyse de trafic.
 
 ## Labs
 
-Aucun lab publié pour le moment. Les prochains seront ajoutés ici.
-
+| Lab | Description | Outils |
+|-----|-------------|--------|
+| [Serveur DHCP Ubuntu](dhcp-ubuntu-server/) | Distribution automatique d'adresses IP à des clients Linux et Windows | Ubuntu Server, isc-dhcp-server, VirtualBox |
 [Retour à l'accueil](../)
