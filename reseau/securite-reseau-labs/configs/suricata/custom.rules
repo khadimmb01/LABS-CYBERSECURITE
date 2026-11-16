@@ -1,0 +1,43 @@
+# ============================================================
+# custom.rules : règles Suricata personnalisées (lab TechSenegal)
+# État final après les TP 4 et 5 (pfSense, interface LAN).
+# Les règles "pass" sont placées en tête de fichier.
+# SID : plage 1000000+ réservée aux règles locales.
+# ============================================================
+
+# --- Exceptions (pass) -------------------------------------------------
+# Les pings du poste admin ne déclenchent jamais le Ping Sweep
+pass icmp 192.168.10.50 any -> $HOME_NET any (msg:"Admin Ping Autorisé"; itype:8; sid:1000010; rev:1;)
+
+# Poste d'un développeur (exemple de faux positif, TP5 partie 6)
+pass tcp 192.168.10.60 any -> $HOME_NET any (msg:"Exception - Outil diagnostic développeur"; sid:1000100; rev:1;)
+
+# --- Confinement d'Ubuntu Server (TP5, mini-défi) ------------------------
+# DNS et web sortants autorisés, tout autre trafic sortant supprimé
+pass udp 192.168.10.20 any -> $EXTERNAL_NET 53 (msg:"Confinement - DNS sortant autorisé"; sid:1000200; rev:1;)
+pass tcp 192.168.10.20 any -> $EXTERNAL_NET [80,443] (msg:"Confinement - HTTP HTTPS sortant autorisé"; sid:1000201; rev:1;)
+drop ip 192.168.10.20 any -> $EXTERNAL_NET any (msg:"[TechSenegal] Confinement - Trafic sortant BLOQUÉ"; classtype:policy-violation; sid:1000202; rev:1;)
+
+# --- Détection (TP4) puis blocage (TP5) ------------------------------------
+# 1000001 : ping sweep (alerte seule)
+alert icmp any any -> $HOME_NET any (msg:"[TechSenegal] Ping Sweep Détecté"; itype:8; threshold:type threshold,track by_src,count 10,seconds 5; classtype:attempted-recon; sid:1000001; rev:1;)
+
+# 1000002 : scan SYN (seuil relevé à 50 SYN / 5 s pour limiter les faux positifs)
+drop tcp any any -> $HOME_NET any (msg:"[TechSenegal] IPS - SYN Scan BLOQUÉ"; flags:S,12; threshold:type threshold,track by_src,count 50,seconds 5; classtype:attempted-recon; sid:1000002; rev:3;)
+
+# 1000003 : brute force SSH (seuil ajusté à 10 connexions / 60 s)
+drop tcp any any -> $HOME_NET 22 (msg:"[TechSenegal] IPS - Brute Force SSH BLOQUÉ"; flow:to_server,established; content:"SSH"; depth:4; threshold:type threshold,track by_src,count 10,seconds 60; classtype:attempted-admin; sid:1000003; rev:3;)
+
+# 1000004 : scanner web identifié par son User-Agent (alerte seule)
+alert http any any -> $HOME_NET $HTTP_PORTS (msg:"[TechSenegal] Scanner Web Détecté - Nikto"; flow:to_server,established; http.user_agent; content:"Nikto"; nocase; classtype:web-application-attack; sid:1000004; rev:1;)
+
+# 1000005 : trafic vers le port 4444 (C2 type Meterpreter)
+# Destination "any" : dans le lab, la machine "C2" (Kali) est dans le LAN
+drop tcp $HOME_NET any -> any 4444 (msg:"[TechSenegal] IPS - Trafic C2 BLOQUÉ"; flow:to_server,established; classtype:trojan-activity; priority:1; sid:1000005; rev:3;)
+
+# --- Mini-défis du TP4 ---------------------------------------------------
+# 1000020 : volume anormal de requêtes DNS (exfiltration)
+alert dns $HOME_NET any -> any 53 (msg:"[TechSenegal] Exfiltration DNS Suspectée"; threshold:type threshold,track by_src,count 30,seconds 10; classtype:bad-unknown; sid:1000020; rev:1;)
+
+# 1000021 : toute connexion Telnet
+alert tcp any any -> $HOME_NET 23 (msg:"[TechSenegal] Connexion Telnet Détectée"; classtype:attempted-admin; priority:1; sid:1000021; rev:1;)

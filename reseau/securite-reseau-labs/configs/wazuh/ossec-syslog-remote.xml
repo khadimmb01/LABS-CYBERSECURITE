@@ -1,0 +1,20 @@
+<!--
+  Extrait de /var/ossec/etc/ossec.conf (Wazuh Manager, 192.168.10.10)
+  À ajouter DANS la balise <ossec_config>, sous le bloc <remote> existant
+  (connexion "secure", port 1514, utilisé par les agents).
+  Ce bloc reçoit les logs Syslog envoyés par pfSense.
+-->
+<remote>
+  <connection>syslog</connection>
+  <port>514</port>
+  <protocol>udp</protocol>
+  <allowed-ips>192.168.10.1</allowed-ips>
+  <local_ip>192.168.10.10</local_ip>
+</remote>
+
+<!--
+  Option de diagnostic, dans le bloc <global> : conserve TOUS les logs reçus
+  dans /var/ossec/logs/archives/archives.log, même sans alerte.
+  À remettre à "no" après les tests (le fichier grossit très vite).
+-->
+<!-- <logall>yes</logall> -->
