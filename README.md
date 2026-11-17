@@ -19,5 +19,6 @@ Lab	Section	Outils
 | [Kerberos et SMB2](systeme/ad-kerberos-smb2/) | Système | Active Directory, Wireshark, klist |
 | [Serveur DHCP Ubuntu](reseau/dhcp-ubuntu-server/) | Réseau | Ubuntu Server, isc-dhcp-server, VirtualBox |
 | [DNS statique BIND9](reseau/dns-statique-bind9/) | Réseau | Ubuntu, BIND9, nslookup |
+- **[Sécurité réseau : pfSense, Suricata, Wazuh](securite-reseau-labs/)** : pare-feu, NAT, IDS/IPS et SIEM sous VMware, 5 TP documentés avec captures, problèmes rencontrés et corrections.
 
 D'autres labs seront ajoutés au fil de ma progression.
